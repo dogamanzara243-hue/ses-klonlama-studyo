@@ -97,6 +97,14 @@
 
       <section id="colab-rehber" class="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 md:p-6 space-y-4">
         <h2 class="text-lg md:text-xl font-bold text-indigo-300">🚀 Kendi Ücretsiz Colab Gradio Linki Nasıl Alınır?</h2>
+        
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <a href="https://colab.research.google.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition shadow-lg shadow-amber-500/20">
+            🚀 Google Colab'i Aç
+          </a>
+          <span class="text-xs text-slate-400">Yeni sekmede açılır • Kodu yapıştırıp ▶ Çalıştır'a basın</span>
+        </div>
+
         <div class="relative">
           <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('colabCodeSes').innerText); this.innerText='✅ Kopyalandı!'; setTimeout(()=>this.innerText='📋 Kodu Kopyala', 2000);" class="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white">📋 Kodu Kopyala</button>
           <pre id="colabCodeSes" class="bg-slate-900 border border-slate-800 rounded-xl p-4 pt-11 text-xs text-slate-300 overflow-x-auto"><code>!pip install -q edge-tts gradio
