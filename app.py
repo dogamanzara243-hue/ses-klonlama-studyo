@@ -87,4 +87,4 @@ async def clone_voice(
         out_path,
         media_type="audio/wav",
         filename="klonlanmis_ses.wav",
-    )# app.py kodunu buraya yapıştırın
+    )
