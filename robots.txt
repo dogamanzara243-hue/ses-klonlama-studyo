@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://dogamanzara243-hue.github.io/ses-klonlama-studyo/sitemap.xml
