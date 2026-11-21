@@ -3,52 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Türkçe Yapay Zeka Seslendirme Stüdyosu</title>
+  <title>Ücretsiz AI Seslendirme Stüdyosu</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen py-10 px-4">
   <div class="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-indigo-400">🎙️ Türkçe AI Seslendirme Stüdyosu</h1>
+      <h1 class="text-2xl font-bold text-indigo-400">🎙️ Ücretsiz AI Seslendirme Stüdyosu</h1>
       <p class="text-sm text-slate-400 mt-1">
-        Metnini yaz, Türkçe ses karakterini ve hızını seç, saniyeler içinde doğal seslendirme (.mp3) indir.
+        Türkçe ve dünyadaki yüzlerce ücretsiz yapay zeka sesinden dilediğini seç, metnini anında MP3'e dönüştür.
       </p>
     </div>
 
     <div>
       <label class="block text-sm font-medium text-slate-300 mb-1">API Sunucu Adresi (Gradio / Colab Linki)</label>
-      <input
-        id="apiUrl"
-        type="url"
-        placeholder="https://xxxx.gradio.live"
-        class="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
-      />
+      <div class="flex gap-2">
+        <input
+          id="apiUrl"
+          type="url"
+          placeholder="https://xxxx.gradio.live"
+          class="flex-1 rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+        />
+        <button
+          id="loadVoicesBtn"
+          type="button"
+          class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-indigo-300 transition"
+        >
+          🔄 Sesleri Yükle
+        </button>
+      </div>
+      <p id="voiceCountInfo" class="text-xs text-slate-400 mt-1">Varsayılan Türkçe sesler yüklü. Tüm dillerdeki sesleri çekmek için API adresini girip "Sesleri Yükle"ye basın.</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="space-y-3 bg-slate-800/50 border border-slate-800 rounded-xl p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Dil / Ses Ara (Örn: tr-TR, en-US, Kadın, Ahmet)</label>
+          <input
+            id="voiceSearch"
+            type="text"
+            placeholder="Filtrele..."
+            class="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+        <div>
+          <div class="flex justify-between text-xs text-slate-400 mb-1">
+            <span>Konuşma Hızı</span>
+            <span id="rateLabel">+5%</span>
+          </div>
+          <input id="rateInput" type="range" min="-25" max="35" step="5" value="5" class="w-full mt-2" />
+        </div>
+      </div>
+
       <div>
         <label class="block text-sm font-medium text-slate-300 mb-1">Ses Seçimi</label>
         <select id="voiceSelect" class="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-          <option value="tr-TR-AhmetNeural">Ahmet (Türkçe - Doğal Erkek)</option>
-          <option value="tr-TR-EmelNeural">Emel (Türkçe - Doğal Kadın)</option>
+          <option value="tr-TR-AhmetNeural">tr-TR-AhmetNeural (Erkek - tr-TR)</option>
+          <option value="tr-TR-EmelNeural">tr-TR-EmelNeural (Kadın - tr-TR)</option>
         </select>
-      </div>
-      <div>
-        <div class="flex justify-between text-xs text-slate-400 mb-1">
-          <span>Konuşma Hızı</span>
-          <span id="rateLabel">+5%</span>
-        </div>
-        <input id="rateInput" type="range" min="-20" max="30" step="5" value="5" class="w-full mt-2" />
       </div>
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-slate-300 mb-1">Seslendirilecek Türkçe Metin</label>
-      <textarea id="scriptText" rows="5" placeholder="Örn: Merhaba minik dostum! Bugün seninle gökyüzündeki sevimli bulutların sırrını keşfedeceğiz." class="w-full rounded-lg bg-slate-800 border border-slate-700 p-3 text-sm focus:outline-none focus:border-indigo-500"></textarea>
+      <label class="block text-sm font-medium text-slate-300 mb-1">Seslendirilecek Metin</label>
+      <textarea id="scriptText" rows="5" placeholder="Okunmasını istediğin metni buraya yaz..." class="w-full rounded-lg bg-slate-800 border border-slate-700 p-3 text-sm focus:outline-none focus:border-indigo-500"></textarea>
     </div>
 
     <button id="generateBtn" type="button" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm transition">
-      ✨ Türkçe Seslendirmeyi Oluştur
+      ✨ Seslendirmeyi Oluştur
     </button>
 
     <div id="statusMsg" class="text-sm text-amber-300 hidden"></div>
@@ -56,7 +78,7 @@
     <div id="resultBox" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-4 space-y-3">
       <div class="text-sm font-semibold text-emerald-400">Seslendirme Hazır!</div>
       <audio id="resultAudio" controls class="w-full"></audio>
-      <a id="downloadLink" download="turkce_seslendirme.mp3" class="inline-block px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold">⬇️ MP3 Dosyasını İndir</a>
+      <a id="downloadLink" download="seslendirme.mp3" class="inline-block px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold">⬇️ MP3 Dosyasını İndir</a>
     </div>
   </div>
 
@@ -64,6 +86,9 @@
     import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
 
     const apiUrlEl = document.getElementById("apiUrl");
+    const loadVoicesBtn = document.getElementById("loadVoicesBtn");
+    const voiceCountInfo = document.getElementById("voiceCountInfo");
+    const voiceSearch = document.getElementById("voiceSearch");
     const voiceSelect = document.getElementById("voiceSelect");
     const rateInput = document.getElementById("rateInput");
     const rateLabel = document.getElementById("rateLabel");
@@ -73,8 +98,60 @@
     const resultAudio = document.getElementById("resultAudio");
     const downloadLink = document.getElementById("downloadLink");
 
+    let allVoices = [
+      { id: "tr-TR-AhmetNeural", ad: "tr-TR-AhmetNeural (Erkek - tr-TR)", dil: "tr-TR" },
+      { id: "tr-TR-EmelNeural", ad: "tr-TR-EmelNeural (Kadın - tr-TR)", dil: "tr-TR" }
+    ];
+
+    function renderVoices(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      const filtered = q
+        ? allVoices.filter(v => v.ad.toLowerCase().includes(q) || v.id.toLowerCase().includes(q))
+        : allVoices;
+
+      const currentVal = voiceSelect.value;
+      voiceSelect.innerHTML = "";
+      filtered.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.id;
+        opt.textContent = v.ad;
+        voiceSelect.appendChild(opt);
+      });
+      if ([...voiceSelect.options].some(o => o.value === currentVal)) {
+        voiceSelect.value = currentVal;
+      }
+    }
+
+    async function fetchAllVoices() {
+      const baseUrl = apiUrlEl.value.trim().replace(/\/+$/, "");
+      if (!baseUrl) return;
+      loadVoicesBtn.disabled = true;
+      voiceCountInfo.textContent = "Tüm ücretsiz sesler sunucudan çekiliyor...";
+      try {
+        const client = await Client.connect(baseUrl);
+        const res = await client.predict("/sesleri_getir", {});
+        if (Array.isArray(res.data[0]) && res.data[0].length > 0) {
+          allVoices = res.data[0];
+          renderVoices(voiceSearch.value);
+          voiceCountInfo.textContent = `✅ Toplam ${allVoices.length} ücretsiz ses yüklendi!`;
+        }
+      } catch (err) {
+        voiceCountInfo.textContent = `⚠️ Ses listesi çekilemedi: ${err.message}`;
+      } finally {
+        loadVoicesBtn.disabled = false;
+      }
+    }
+
     apiUrlEl.value = localStorage.getItem("edge_tts_api_url") || "";
-    apiUrlEl.addEventListener("change", () => localStorage.setItem("edge_tts_api_url", apiUrlEl.value.trim()));
+    if (apiUrlEl.value) fetchAllVoices();
+
+    apiUrlEl.addEventListener("change", () => {
+      localStorage.setItem("edge_tts_api_url", apiUrlEl.value.trim());
+      fetchAllVoices();
+    });
+    loadVoicesBtn.addEventListener("click", fetchAllVoices);
+    voiceSearch.addEventListener("input", () => renderVoices(voiceSearch.value));
+
     rateInput.addEventListener("input", () => {
       const val = Number(rateInput.value);
       rateLabel.textContent = val >= 0 ? `+${val}%` : `${val}%`;
@@ -98,7 +175,7 @@
 
       resultBox.classList.add("hidden");
       generateBtn.disabled = true;
-      showStatus("Türkçe seslendirme hazırlanıyor...");
+      showStatus("Seslendirme hazırlanıyor...");
 
       try {
         const client = await Client.connect(baseUrl);
